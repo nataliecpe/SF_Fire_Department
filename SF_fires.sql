@@ -147,14 +147,6 @@ Select Month_Year, neighborhood_district, COUNT(*) As Count From SF_Fires..Fire_
 Where NOT neighborhood_district = 'NULL'
 Group By Month_Year, neighborhood_district 
 
--- Number of violations by zipcode
-Select Zipcode, COUNT(*) As Violation_Count From SF_Fires..Fire_Violations
-Select Fire_Incidents.zipcode, COUNT(*) As Incident_Count, AVG(Arrival_minutes) As Arrival_Time From SF_Fires..Fire_Incidents
---Where zipcode IS NOT NULL
-Join SF_Fires..Fire_Violations
-On Fire_Incidents.zipcode = Fire_Violations.Zipcode
-Group By Fire_Incidents.zipcode, Fire_Violations.Zipcode
-
 -- Fix city strings
 Update SF_Fires..Fire_Incidents
 Set City = REPLACE(City, 'SF','San Francisco')
