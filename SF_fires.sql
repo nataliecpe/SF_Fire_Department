@@ -177,3 +177,29 @@ Group By Zipcode
 Select Fire_Incidents.zipcode, City, COUNT(*) As Incident_Count, AVG(Arrival_minutes) As Arrival_Time From SF_Fires..Fire_Incidents
 Where zipcode IS NOT NULL
 Group By Fire_Incidents.zipcode, City
+
+-- Remove dashes from "Property Use" column
+Update SF_Fires..Fire_Incidents
+Set [Property Use] = REPLACE([Property Use], '-', '') From SF_Fires..Fire_Incidents
+
+-- Add new column and get the property code from the "Property Use" column
+Alter Table SF_Fires..Fire_Incidents
+Add property_code nvarchar(255)
+Update SF_Fires..Fire_Incidents
+Set property_code = SUBSTRING([Property Use], 1, 3)
+
+-- Add new column and get the "primary situation" code from the "primary situation" column
+Alter Table SF_Fires..Fire_Incidents
+Add situation_code nvarchar(255)
+Update SF_Fires..Fire_Incidents
+Set situation_code = SUBSTRING([Primary Situation], 1, 3)
+
+-- Add new column and get the "Area of Fire Origin" code from the "Area of Fire Origin" column
+Alter Table SF_Fires..Fire_Incidents
+Add origin_code nvarchar(255)
+Update SF_Fires..Fire_Incidents
+Set origin_code = SUBSTRING([Area of Fire Origin], 1, 3)
+
+-- Count occurances of incidents by origin area
+Select [origin_code], COUNT(*) As origin_count From SF_Fires..Fire_Incidents Group By [origin_code]
+Order By origin_count
