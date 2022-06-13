@@ -1,24 +1,3 @@
--- Remove '-' character from "Primary Sitation" column so that all strings in column are consistent
-Update SF_Fires..Fire_Incidents
-Set [Primary Situation] = REPLACE([Primary Situation], '-', '')
-
-Update SF_Fires..Fire_Incidents
-Set [Primary Situation] = REPLACE([Primary Situation], '  ', '')
-
--- Get string after code number
-Select SUBSTRING([Primary Situation], 4, LEN([Primary Situation])) As Situation From SF_Fires..Fire_Incidents Group By [Primary Situation] Order By [Primary Situation]
-
--- Add new column - the Primary Situation without the code number
-Alter Table SF_Fires..Fire_Incidents
-Add Situation_text nvarchar(255)
-Update SF_Fires..Fire_Incidents
-Set Situation_text = SUBSTRING([Primary Situation], 4, LEN([Primary Situation]))
-
--- Remove any blank spaces that are in front of the string
-Update SF_Fires..Fire_Incidents
-Set Situation_text = LTRIM(Situation_text) From SF_Fires..Fire_Incidents
-
-Select Situation_text, COUNT(*) As Count From SF_Fires..Fire_Incidents Group By Situation_text Order By Count
 
 -- Replace all false alarm strings with one string: "False Alarm"
 Update SF_Fires..Fire_Incidents Set 
